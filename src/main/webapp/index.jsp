@@ -47,7 +47,7 @@
 <body>
     <div class="container">
         <h1>Registration Page</h1>
-        <form >
+        <form action="RegisterServlet" method="post" >
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" placeholder="Enter your name" required>
             

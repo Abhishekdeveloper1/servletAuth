@@ -43,4 +43,36 @@ public class LoginDao {
         }
         return user;
     }
+    
+    public boolean registerUser(User user) {
+        String sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+
+        // Check if email already exists
+        String emailCheckSql = "SELECT * FROM users WHERE email = ?";
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            try (PreparedStatement checkStatement = connection.prepareStatement(emailCheckSql)) {
+                checkStatement.setString(1, user.getEmail());
+                ResultSet resultSet = checkStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    return false;  // Email already exists
+                }
+            }
+
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, user.getName());
+                statement.setString(2, user.getEmail());
+                statement.setString(3, user.getPassword());
+
+                int rowsInserted = statement.executeUpdate();
+                return rowsInserted > 0; // Return true if insertion was successful
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
